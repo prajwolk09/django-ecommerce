@@ -1,0 +1,17 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+  <h1 class="text-xl font-bold">Dashboard</h1>
+  <p>Welcome, {{ user.username }}!</p>
+
+  <ul class="mt-4 space-y-2">
+    <li><a href="{% url 'dashboard' %}">My Profile</a></li>
+    <li><a href="#">Order History</a></li>
+    <li><a href="#">Update Password</a></li>
+    <li>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+      </form>
+    </li>
+  </ul>
+{% endblock %}

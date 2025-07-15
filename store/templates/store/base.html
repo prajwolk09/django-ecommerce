@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static tailwind_tags %}
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            Techsy
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
+    {% tailwind_css %}
+</head>
+<body class="min-h-screen flex flex-col bg-gray-500">
+
+    <nav class="bg-sky-200 px-4 py-3 flex justify-between items-center">
+          <a href="/">Home</a>
+          <a href="/products/">Products</a>
+          <a href="/cart/">Cart</a>
+
+          {% if user.is_authenticated %}
+            <span>Hello, {{ user.username }}!</span>
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            <form method="POST" action="{% url 'logout' %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-blue-500 hover:underline cursor-pointer">Logout</button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+          {% endif %}
+    </nav>
+
+
+    <div class="flex-grow container mx-auto py-6">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="bg-purple-300 text-center py-4 my-4">
+        <p>&copy; Techsy</p>
+    </footer>
+</body>
+</html>
