@@ -20,6 +20,24 @@ def product_detail(request, slug):
 def cart(request):
     return render(request,'store/cart.html')
 
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    cart = request.session.get('cart',{})
+
+    #If the product is already in the cart
+    if str(product.id) in cart:
+        cart[str(product.id)]['quantity'] +=1
+    else:
+        cart[str(product_id)] = {
+            'name': product.name,
+            'price': str(product.price),
+            'quantity': 1
+        }
+
+    request.session['cart'] = cart
+    request.session.modified = True
+    return redirect('cart')
+
 def register(request):
     form = UserCreationForm()
     if request.method == 'POST':

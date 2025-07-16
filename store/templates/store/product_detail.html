@@ -11,6 +11,6 @@
 
     <p class="text-gray-800">{{ product.description }}</p>
 
-    <!-- Placeholder: Later add "Add to cart" button here -->
+    <a href="{% url 'add_to_cart' product.id %}" class="bg-blue-500 text-white px-4 py-2">Add to Cart</a>
   </div>
 {% endblock %}
