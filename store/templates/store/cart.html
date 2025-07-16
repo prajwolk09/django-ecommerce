@@ -1,5 +1,32 @@
-{% extends 'store/base.html' %}
+{% extends "store/base.html" %}
 
 {% block content %}
-    <h1 class="text-3xl text-center font-bold text-red-800">This is the Cart Page</h1>
+  <h1 class="text-2xl font-bold mb-4">Your Cart</h1>
+
+  {% if cart_items %}
+    <table class="w-full table-auto border-collapse">
+      <thead>
+        <tr>
+          <th class="border px-4 py-2 text-left">Product</th>
+          <th class="border px-4 py-2">Price</th>
+          <th class="border px-4 py-2">Quantity</th>
+          <th class="border px-4 py-2">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td class="border px-4 py-2">{{ item.name }}</td>
+            <td class="border px-4 py-2">${{ item.price }}</td>
+            <td class="border px-4 py-2">{{ item.quantity }}</td>
+            <td class="border px-4 py-2">${{ item.subtotal }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="text-right font-bold mt-4">Total: ${{ total }}</p>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
 {% endblock %}
