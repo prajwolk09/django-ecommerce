@@ -62,6 +62,34 @@ def add_to_cart(request, product_id):
     request.session.modified = True
     return redirect('cart')
 
+def update_cart(request, product_id):
+    if request.method == 'POST':
+        cart = request.session.get('cart',{})
+        quantity = int(request.POST.get('quantity',1))
+
+        if str(product_id) in cart:
+            if quantity > 0:
+                cart[str(product_id)]['quantity'] = quantity
+            else:
+                cart.pop(str(product_id))
+
+            request.session['cart'] = cart
+            request.session.modified = True
+
+    return redirect('cart')
+
+
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart',{})
+
+    if str(product_id) in cart:
+        cart.pop(str(product_id))
+        request.session['cart'] = cart
+        request.session.modified = True
+
+    return redirect('cart')
+
+
 def register(request):
     form = UserCreationForm()
     if request.method == 'POST':

@@ -14,15 +14,28 @@
         </tr>
       </thead>
       <tbody>
-        {% for item in cart_items %}
-          <tr>
-            <td class="border px-4 py-2">{{ item.name }}</td>
-            <td class="border px-4 py-2">${{ item.price }}</td>
-            <td class="border px-4 py-2">{{ item.quantity }}</td>
-            <td class="border px-4 py-2">${{ item.subtotal }}</td>
-          </tr>
-        {% endfor %}
+              {% for item in cart_items %}
+                <tr>
+                  <td class="border px-4 py-2">{{ item.name }}</td>
+                  <td class="border px-4 py-2">${{ item.price }}</td>
+                  <td class="border px-4 py-2">
+                    <form method="POST" action="{% url 'update_cart' item.product_id %}">
+                      {% csrf_token %}
+                      <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="w-16 border px-2 py-1">
+                      <button type="submit" class="bg-blue-500 text-white px-2 py-1 cursor-pointer">Update</button>
+                    </form>
+                  </td>
+                  <td class="border px-4 py-2">${{ item.subtotal }}</td>
+                  <td class="border px-4 py-2">
+                    <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="bg-red-500 text-white px-2 py-1 cursor-pointer">Remove</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
       </tbody>
+
     </table>
 
     <p class="text-right font-bold mt-4">Total: ${{ total }}</p>
