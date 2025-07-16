@@ -11,6 +11,16 @@
 
     <p class="text-gray-800">{{ product.description }}</p>
 
-    <a href="{% url 'add_to_cart' product.id %}" class="bg-blue-500 text-white px-4 py-2">Add to Cart</a>
+    <<form method="POST" action="{% url 'add_to_cart' product.id %}">
+    {% csrf_token %}
+
+    <!-- Optional: let user choose quantity -->
+    <label for="quantity">Quantity:</label>
+    <input type="number" name="quantity" id="quantity" value="1" min="1" class="border px-2 py-1">
+
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 cursor-pointer rounded-full">
+      Add to Cart
+    </button>
+  </form>
   </div>
 {% endblock %}

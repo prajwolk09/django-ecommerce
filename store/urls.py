@@ -7,7 +7,7 @@ urlpatterns = [
     path('products/',views.products,name='products'),
     path('products/<slug:slug>',views.product_detail,name='product_detail'),
 
-    path('cart/',views.cart,name='cart'),
+    path('cart/',views.cart_detail,name='cart'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
 
     path('login/', LoginView.as_view(template_name='store/login.html'), name='login'),

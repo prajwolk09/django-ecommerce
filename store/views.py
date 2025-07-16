@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Product
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 # Create your views here.
 def home(request):
@@ -17,12 +17,17 @@ def product_detail(request, slug):
     return render(request, 'store/product_detail.html', {'product':product})
 
 @login_required
-def cart(request):
-    return render(request,'store/cart.html')
+def cart_detail(request):
+    cart = request.session.get('cart', {})
+    print(cart)
+    return render(request,'store/cart.html',{'cart':cart})
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     cart = request.session.get('cart',{})
+
+    #GEt quantity from cart, default to 1
+    quantity = int(request.POST.get('quantity',1))
 
     #If the product is already in the cart
     if str(product.id) in cart:
@@ -31,7 +36,7 @@ def add_to_cart(request, product_id):
         cart[str(product_id)] = {
             'name': product.name,
             'price': str(product.price),
-            'quantity': 1
+            'quantity': quantity
         }
 
     request.session['cart'] = cart
