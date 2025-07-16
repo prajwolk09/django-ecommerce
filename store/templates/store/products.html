@@ -1,5 +1,23 @@
 {% extends 'store/base.html' %}
 
 {% block content %}
-    <h1 class="text-3xl text-center font-bold text-red-800">This is the Products Page</h1>
+
+    <h2 class="text-2xl font-bold mb-4">Products</h2>
+
+    {% if products %}
+    	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for product in products %}
+            <div class="border rounded p-4 bg-white">
+                <a href="{% url 'product_detail' product.slug %}" class="text-blue-600 hover:underline">{{ product.name }}</a>
+                <p class="text-gray-700 mb-2">Rs.{{ product.price }}</p>
+                <p class="text-gray-600 mb-2">{{ product.description }}</p>
+                {% if product.image %}
+                	<img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover mb-2">
+                {% endif %} 
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>No products available.</p>
+    {% endif %}
 {% endblock %}

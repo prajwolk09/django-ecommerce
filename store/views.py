@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from .models import Product
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def home(request):
     return render(request,'store/home.html')
 
 def products(request):
-    return render(request,'store/products.html')
+    products = Product.objects.filter(is_active=True)
+    return render(request,'store/products.html', {'products':products})
+
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    return render(request, 'store/product_detail.html', {'product':product})
 
 @login_required
 def cart(request):
