@@ -1,45 +1,52 @@
 {% extends "store/base.html" %}
 
 {% block content %}
-  <h1 class="text-2xl font-bold mb-4">Your Cart</h1>
+  <h1 class="text-3xl font-extrabold mb-8 text-center">🛒 Your Shopping Cart</h1>
 
   {% if cart_items %}
-    <table class="w-full table-auto border-collapse">
-      <thead>
-        <tr>
-          <th class="border px-4 py-2 text-left">Product</th>
-          <th class="border px-4 py-2">Price</th>
-          <th class="border px-4 py-2">Quantity</th>
-          <th class="border px-4 py-2">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-              {% for item in cart_items %}
-                <tr>
-                  <td class="border px-4 py-2">{{ item.name }}</td>
-                  <td class="border px-4 py-2">${{ item.price }}</td>
-                  <td class="border px-4 py-2">
-                    <form method="POST" action="{% url 'update_cart' item.product_id %}">
-                      {% csrf_token %}
-                      <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="w-16 border px-2 py-1">
-                      <button type="submit" class="bg-blue-500 text-white px-2 py-1 cursor-pointer">Update</button>
-                    </form>
-                  </td>
-                  <td class="border px-4 py-2">${{ item.subtotal }}</td>
-                  <td class="border px-4 py-2">
-                    <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
-                      {% csrf_token %}
-                      <button type="submit" class="bg-red-500 text-white px-2 py-1 cursor-pointer">Remove</button>
-                    </form>
-                  </td>
-                </tr>
-              {% endfor %}
-      </tbody>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 shadow rounded-lg overflow-hidden">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-4 text-left text-gray-600 font-semibold">Product</th>
+            <th class="px-6 py-4 text-center text-gray-600 font-semibold">Price</th>
+            <th class="px-6 py-4 text-center text-gray-600 font-semibold">Quantity</th>
+            <th class="px-6 py-4 text-center text-gray-600 font-semibold">Subtotal</th>
+            <th class="px-6 py-4 text-center text-gray-600 font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for item in cart_items %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4">{{ item.name }}</td>
+              <td class="px-6 py-4 text-center">${{ item.price }}</td>
+              <td class="px-6 py-4 text-center">
+                <form method="POST" action="{% url 'update_cart' item.product_id %}" class="flex justify-center items-center gap-2">
+                  {% csrf_token %}
+                  <input type="number" name="quantity" value="{{ item.quantity }}" min="0"
+                    class="w-16 border rounded px-2 py-1 text-center">
+                  <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">Update</button>
+                </form>
+              </td>
+              <td class="px-6 py-4 text-center">${{ item.subtotal }}</td>
+              <td class="px-6 py-4 text-center">
+                <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded">Remove</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-    </table>
-
-    <p class="text-right font-bold mt-4">Total: ${{ total }}</p>
+    <div class="flex justify-end mt-8">
+      <div class="bg-gray-100 px-6 py-4 rounded-lg shadow text-right">
+        <p class="text-xl font-bold text-gray-700">Total: ${{ total }}</p>
+      </div>
+    </div>
   {% else %}
-    <p>Your cart is empty.</p>
+    <p class="text-center text-gray-600 text-lg mt-8">Your cart is empty. 🛍️</p>
   {% endif %}
 {% endblock %}
