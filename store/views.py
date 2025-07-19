@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .models import Product
+from .models import Product, Order, OrderItem
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
 # Create your views here.
@@ -60,7 +61,7 @@ def add_to_cart(request, product_id):
 
     request.session['cart'] = cart
     request.session.modified = True
-    return redirect('cart')
+    return redirect('products')
 
 def update_cart(request, product_id):
     if request.method == 'POST':
@@ -104,3 +105,45 @@ def register(request):
 @login_required
 def dashboard(request):
     return render(request,'store/dashboard.html')
+
+@login_required
+def checkout(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total = 0
+
+    for product_id, quantity in cart.items():
+        try:
+            product = Product.objects.get(id=product_id)
+            qty = quantity['quantity'] if isinstance(quantity, dict) else quantity
+            subtotal = product.price * qty
+            cart_items.append({
+                'product': product,
+                'quantity': qty,
+                'subtotal': subtotal
+            })
+            total += subtotal
+        except Product.DoesNotExist:
+            continue
+
+    if request.method == 'POST':
+        if not cart_items:
+            messages.warning(request, "Your cart is empty!")
+            return redirect('cart')
+
+        order = Order.objects.create(user=request.user, total=total)
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item['product'],
+                quantity=item['quantity'],
+                price=item['product'].price  # snapshot price
+            )
+        request.session['cart'] = {}
+        messages.success(request, "Order placed successfully!")
+        return redirect('dashboard')
+
+    return render(request, 'store/checkout.html', {
+        'cart_items': cart_items,
+        'total': total,
+    })
