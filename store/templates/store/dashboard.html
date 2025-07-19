@@ -1,8 +1,30 @@
 {% extends "store/base.html" %}
+{% load multiply %}
 
 {% block content %}
   <h1 class="text-xl font-bold">Dashboard</h1>
   <p>Welcome, {{ user.username }}!</p>
+
+  <h2 class="text-xl font-bold mt-8 mb-4">Your Orders</h2>
+
+{% if orders %}
+  {% for order in orders %}
+    <div class="border rounded p-4 mb-6">
+      <p class="text-sm text-gray-500">Order Date: {{ order.date }}</p>
+      <p class="font-semibold">Total: ${{ order.total }}</p>
+      <ul class="list-disc list-inside mt-2">
+        {% for item in order.items.all %}
+          <li>
+            {{ item.product.name }} — {{ item.quantity }} × ${{ item.price }} = ${{ item.quantity|multiply:item.price }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>You haven't placed any orders yet.</p>
+{% endif %}
+
 
   <ul class="mt-4 space-y-2">
     <li><a href="{% url 'dashboard' %}">My Profile</a></li>

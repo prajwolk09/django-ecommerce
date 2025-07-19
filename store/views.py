@@ -104,7 +104,10 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    return render(request,'store/dashboard.html')
+    orders = Order.objects.filter(user=request.user).order_by('-date_ordered')
+    return render(request,'store/dashboard.html',{
+        'orders':orders
+    })
 
 @login_required
 def checkout(request):
